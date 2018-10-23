@@ -186,7 +186,7 @@ public class GPSService extends Service
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent);
 
-        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setSmallIcon(R.drawable.ic_notif);
         builder.setColor(ContextCompat.getColor(context, R.color.colorWhite));
     }
 
