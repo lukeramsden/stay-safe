@@ -219,15 +219,15 @@ public class GPSService extends Service
          */
 
         if(totalCrimes > 0 ) { risk = 1; }
-        if(totalCrimes > 50 ) { risk = 2; }
-        if(totalCrimes > 100 ) { risk = 3; }
-        if(totalCrimes > 200 ) { risk = 4; }
-        if(totalCrimes > 250 ) { risk = 5; }
-        if(totalCrimes > 500 ) { risk = 6; }
-        if(totalCrimes > 600 ) { risk = 7; }
-        if(totalCrimes > 750 ) { risk = 8; }
-        if(totalCrimes > 900) { risk = 9; }
-        if(totalCrimes > 1000) { risk = 10; }
+        if(totalCrimes > 25 ) { risk = 2; }
+        if(totalCrimes > 50 ) { risk = 3; }
+        if(totalCrimes > 100 ) { risk = 4; }
+        if(totalCrimes > 125 ) { risk = 5; }
+        if(totalCrimes > 250 ) { risk = 6; }
+        if(totalCrimes > 300 ) { risk = 7; }
+        if(totalCrimes > 375 ) { risk = 8; }
+        if(totalCrimes > 450) { risk = 9; }
+        if(totalCrimes > 500) { risk = 10; }
 
         return risk;
     }
@@ -236,7 +236,7 @@ public class GPSService extends Service
         Log.d(TAG, "Sending notification");
 
         int riskFactor = getRiskFactor();
-        customView.setTextViewText(R.id.notification_subtitle, "Risk: " + riskFactor);
+        customView.setTextViewText(R.id.notification_subtitle, "Risk: " + riskFactor + "/10");
 
         int riskNameId;
 
@@ -253,17 +253,17 @@ public class GPSService extends Service
     }
 
     private void getCrimeNumber(Location lastLocation) {
-        double lat1 = lastLocation.getLongitude() - 0.01;
-        double lat2 = lastLocation.getLongitude() + 0.01;
+        double long1 = lastLocation.getLongitude() - 0.005;
+        double long2 = lastLocation.getLongitude() + 0.005;
 
-        double long1 = lastLocation.getLatitude() - 0.01;
-        double long2 = lastLocation.getLatitude() + 0.01;
+        double lat1 = lastLocation.getLatitude() - 0.01;
+        double lat2 = lastLocation.getLatitude() + 0.01;
 
 
-        String urlString = baseURL + String.valueOf(long1) + "," + String.valueOf(lat1) + ":"
-                                                                                + String.valueOf(long1) + "," + String.valueOf(lat2) + ":"
-                                                                                + String.valueOf(long2) + "," + String.valueOf(lat1) + ":"
-                                                                                + String.valueOf(long2) + "," + String.valueOf(lat2) + dateValue;
+        String urlString = baseURL + String.valueOf(lat1) + "," + String.valueOf(long1) + ":"
+                                                                                + String.valueOf(lat1) + "," + String.valueOf(long2) + ":"
+                                                                                + String.valueOf(lat2) + "," + String.valueOf(long1) + ":"
+                                                                                + String.valueOf(lat2) + "," + String.valueOf(long2) + dateValue;
         Log.e(TAG, urlString);
 
 

@@ -1,6 +1,7 @@
 package com.example.turtlesandals.staysafe;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -18,6 +19,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import static com.example.turtlesandals.staysafe.GPSService.LOCATION_DISTANCE;
 import static com.example.turtlesandals.staysafe.GPSService.LOCATION_INTERVAL;
@@ -27,6 +32,7 @@ public class MapLocation extends Fragment {
     MapView mMapView;
     private GoogleMap googleMap;
     private LocationManager mLocationManager = null;
+    private Polygon polygon;
 
     private class LocationListener implements android.location.LocationListener
     {
@@ -79,8 +85,27 @@ public class MapLocation extends Fragment {
     public void moveToLocation(Location loc) {
         if(loc == null || googleMap == null) return;
         LatLng latlng = new LatLng(loc.getLatitude(), loc.getLongitude());
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(latlng).zoom(15).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(latlng).zoom(14).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        if(polygon != null)
+            polygon.setVisible(false);
+
+        double lat1 = loc.getLatitude() - 0.005;
+        double lat2 = loc.getLatitude() + 0.005;
+
+        double long1 = loc.getLongitude() - 0.01;
+        double long2 = loc.getLongitude() + 0.01;
+
+        PolygonOptions rectOptions = new PolygonOptions()
+                .add(new LatLng(lat1, long1))
+                .add(new LatLng(lat1, long2))
+                .add(new LatLng(lat2, long2))
+                .add(new LatLng(lat2, long1))
+                .strokeWidth(5)
+                .strokeColor(Color.argb(100, 0, 0, 255))
+                .fillColor(Color.argb(50, 0, 0, 255));
+        polygon = googleMap.addPolygon(rectOptions);
     }
 
     @Override
