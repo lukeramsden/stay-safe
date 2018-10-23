@@ -245,7 +245,7 @@ public class GPSService extends Service
         else { riskNameId = R.string.high_risk; }
 
         customBigView.setTextViewText(R.id.notification_subtitle, getResources().getString(riskNameId));
-        customBigView.setTextViewText(R.id.notification_risk, "Risk: " + riskFactor);
+        customBigView.setTextViewText(R.id.notification_risk, "Risk: " + riskFactor + "/10");
         customBigView.setTextViewText(R.id.notification_crimes_per_month, "Crimes Per Month: " + Integer.toString(totalCrimes));
 
         createNotification();

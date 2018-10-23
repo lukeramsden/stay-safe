@@ -42,7 +42,7 @@ public class MapLocation extends Fragment {
         public void onLocationChanged(Location location)
         {
             Log.e(TAG, "onLocationChanged: " + location);
-            moveToLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+            moveToLocation(location);
         }
 
         @Override
@@ -76,11 +76,10 @@ public class MapLocation extends Fragment {
         }
     }
 
-    public void moveToLocation(LatLng loc) {
-        // For dropping a marker at a point on the Map
-        googleMap.addMarker(new MarkerOptions().position(loc).title("You").snippet("Where you are"));
-        // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(loc).zoom(15).build();
+    public void moveToLocation(Location loc) {
+        if(loc == null || googleMap == null) return;
+        LatLng latlng = new LatLng(loc.getLatitude(), loc.getLongitude());
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(latlng).zoom(15).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
@@ -100,6 +99,8 @@ public class MapLocation extends Fragment {
             e.printStackTrace();
         }
 
+        initializeLocationManager();
+
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
@@ -115,29 +116,29 @@ public class MapLocation extends Fragment {
                 } catch (IllegalArgumentException ex) {
                     Log.d(TAG, "network provider does not exist, " + ex.getMessage());
                 }
+
+                try {
+                    mLocationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                            mLocationListeners[1]);
+                    moveToLocation(mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
+                } catch (java.lang.SecurityException ex) {
+                    Log.i(TAG, "fail to request location update, ignore", ex);
+                } catch (IllegalArgumentException ex) {
+                    Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+                }
+                try {
+                    mLocationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                            mLocationListeners[0]);
+                    moveToLocation(mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                } catch (java.lang.SecurityException ex) {
+                    Log.i(TAG, "fail to request location update, ignore", ex);
+                } catch (IllegalArgumentException ex) {
+                    Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+                }
             }
         });
-
-        initializeLocationManager();
-
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[1]);
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-        }
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[0]);
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
-        }
 
         return rootView;
     }
