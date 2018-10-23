@@ -228,7 +228,7 @@ public class GPSService extends Service
         }
 
         protected void onPostExecute(String result) {
-            /*int i = 0;
+            int i = 0;
             Pattern p = Pattern.compile("category");
             Matcher m = p.matcher(result);
             while (m.find()) {
@@ -236,7 +236,7 @@ public class GPSService extends Service
             }
 
             totalCrimes = i;
-            Log.e(TAG, String.valueOf(i));*/
+            Log.e(TAG, String.valueOf(i));
         }
     }
 
