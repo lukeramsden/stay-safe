@@ -184,10 +184,9 @@ public class GPSService extends Service
                 .setCustomBigContentView(customBigView)
                 .setChannelId(CHANNEL_ID)
                 .setOnlyAlertOnce(true)
-                .setContentIntent(pendingIntent);
-
-        builder.setSmallIcon(R.drawable.ic_notif);
-        builder.setColor(ContextCompat.getColor(context, R.color.colorWhite));
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_notif)
+                .setColor(ContextCompat.getColor(context, R.color.colorWhite));
     }
 
     private void createNotificationChannel() {
