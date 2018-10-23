@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -184,6 +185,9 @@ public class GPSService extends Service
                 .setChannelId(CHANNEL_ID)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent);
+
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setColor(ContextCompat.getColor(context, R.color.colorWhite));
     }
 
     private void createNotificationChannel() {

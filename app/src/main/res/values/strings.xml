@@ -7,4 +7,5 @@
     <string name="moderate_risk">You are in a moderate risk area</string>
     <string name="high_risk">You are in a high risk area</string>
     <string name="title">Stay Safe</string>
+    <string name="start">Start</string>
 </resources>
