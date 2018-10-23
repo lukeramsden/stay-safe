@@ -106,9 +106,7 @@ public class GPSService extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         super.onStartCommand(intent, flags, startId);
-        createNotification();
-        startForeground(notification_id, builder.build());
-
+        sendNotification();
         Log.e(TAG, "onStartCommand");
         return START_NOT_STICKY;
     }
@@ -146,8 +144,6 @@ public class GPSService extends Service
         customView = new RemoteViews(getPackageName(), R.layout.notif);
         customBigView = new RemoteViews(getPackageName(), R.layout.notif_big);
         notification_id = (int) System.currentTimeMillis();
-
-
     }
 
     @Override
@@ -180,11 +176,13 @@ public class GPSService extends Service
         createNotificationChannel();
 
         builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.ic_launcher_background)
+        builder
+                .setSmallIcon(R.drawable.ic_launcher_background)
                 .setOngoing(true)
                 .setCustomContentView(customView)
                 .setCustomBigContentView(customBigView)
                 .setChannelId(CHANNEL_ID)
+                .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent);
     }
 
@@ -201,6 +199,54 @@ public class GPSService extends Service
         }
     }
 
+    private int getRiskFactor() {
+        int risk = 0;
+
+        /**
+         * > 1000  = 10
+         * <= 1000 = 9
+         * <= 750  = 8
+         * <= 600  = 7
+         * <= 500  = 6
+         * <= 250  = 5
+         * <= 200  = 4
+         * <= 150  = 3
+         * <= 50   = 1
+         */
+
+        if(totalCrimes > 0 ) { risk = 1; }
+        if(totalCrimes > 50 ) { risk = 2; }
+        if(totalCrimes > 100 ) { risk = 3; }
+        if(totalCrimes > 200 ) { risk = 4; }
+        if(totalCrimes > 250 ) { risk = 5; }
+        if(totalCrimes > 500 ) { risk = 6; }
+        if(totalCrimes > 600 ) { risk = 7; }
+        if(totalCrimes > 750 ) { risk = 8; }
+        if(totalCrimes > 900) { risk = 9; }
+        if(totalCrimes > 1000) { risk = 10; }
+
+        return risk;
+    }
+
+    private void sendNotification() {
+        Log.d(TAG, "Sending notification");
+
+        int riskFactor = getRiskFactor();
+        customView.setTextViewText(R.id.notification_subtitle, "Risk: " + riskFactor);
+
+        int riskNameId;
+
+        if(riskFactor <= 3) { riskNameId = R.string.low_risk; }
+        else if(riskFactor <= 6) { riskNameId = R.string.moderate_risk; }
+        else { riskNameId = R.string.high_risk; }
+
+        customBigView.setTextViewText(R.id.notification_subtitle, getResources().getString(riskNameId));
+        customBigView.setTextViewText(R.id.notification_risk, "Risk: " + riskFactor);
+        customBigView.setTextViewText(R.id.notification_crimes_per_month, "Crimes Per Month: " + Integer.toString(totalCrimes));
+
+        createNotification();
+        startForeground(notification_id, builder.build());
+    }
 
     private void getCrimeNumber(Location lastLocation) {
         double lat1 = lastLocation.getLongitude() - 0.01;
@@ -228,6 +274,11 @@ public class GPSService extends Service
         }
 
         protected void onPostExecute(String result) {
+            countCrimes(result);
+            sendNotification();
+        }
+
+        private void countCrimes(String result) {
             int i = 0;
             Pattern p = Pattern.compile("category");
             Matcher m = p.matcher(result);
