@@ -34,8 +34,8 @@ public class GPSService extends Service
 {
     private static final String TAG = "StaySafeGPS";
     private static final String baseURL = "https://data.police.uk/api/crimes-street/all-crime?poly=";
-    private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 10f;
+    public static final int LOCATION_INTERVAL = 1000;
+    public static final float LOCATION_DISTANCE = 10f;
     public static final int DEFAULT_RETRY_ATTEMPTS = 1;
     public static final int DEFAULT_RETRY_DELAY = 15;
     private final int retryAttempts = DEFAULT_RETRY_ATTEMPTS;
