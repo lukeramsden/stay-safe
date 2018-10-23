@@ -5,11 +5,26 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
+    <RelativeLayout
+        android:id="@+id/icon_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/big_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="6dp"
+            android:src="@drawable/ic_notif"/>
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/notification_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="false"
+        android:layout_toEndOf="@id/icon_container"
         android:layout_marginTop="6dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
